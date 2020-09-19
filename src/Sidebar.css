@@ -42,6 +42,7 @@
 .sidebar__searchContainer > input {
   border: none;
   margin-left: 10px;
+  width: 90%;
 }
 
 .sidebar_chats {
