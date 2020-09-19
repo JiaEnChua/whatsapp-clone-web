@@ -8,7 +8,6 @@ import { SearchOutlined } from "@material-ui/icons";
 import SidebarChat from "./SidebarChat";
 import db from "./firebase";
 import { useStateValue } from "./StateProvider";
-import { render } from "react-dom";
 import SlidingPane from "react-sliding-pane";
 import "react-sliding-pane/dist/react-sliding-pane.css";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";

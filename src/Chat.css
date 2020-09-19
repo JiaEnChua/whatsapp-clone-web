@@ -15,6 +15,7 @@
 }
 
 .chat__headerMiddle p {
+  margin-top: 5px;
   color: gray;
 }
 

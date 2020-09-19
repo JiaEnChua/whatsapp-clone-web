@@ -57,7 +57,14 @@ function Chat() {
         <Avatar src={`https://avatars.dicebear.com/api/male/${roomID}.svg`} />
         <div className="chat__headerMiddle">
           <h3>{roomName}</h3>
-          <p>load message</p>
+          <p>
+            {messages.length > 0
+              ? "last seen " +
+                new Date(
+                  messages[messages.length - 1]?.data.timestamp?.toDate()
+                ).toUTCString()
+              : ""}
+          </p>
         </div>
         <div className="chat__headerRight">
           <IconButton>
