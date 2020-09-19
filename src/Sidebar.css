@@ -4,6 +4,24 @@
   flex: 0.35;
 }
 
+.sidebar__logOutExit > .MuiSvgIcon-root {
+  width: 100%;
+}
+
+.sidebar__logOutExit:hover {
+  cursor: pointer;
+  background-color: rgb(221, 221, 221);
+}
+.sidebar__logOut {
+  padding: 10px;
+}
+
+.sidebar__logOut:hover {
+  background-color: rgb(221, 221, 221);
+  cursor: pointer;
+  width: 100%;
+}
+
 .sidebar__header {
   display: flex;
   justify-content: space-between;

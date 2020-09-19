@@ -8,11 +8,19 @@ import { SearchOutlined } from "@material-ui/icons";
 import SidebarChat from "./SidebarChat";
 import db from "./firebase";
 import { useStateValue } from "./StateProvider";
+import { render } from "react-dom";
+import SlidingPane from "react-sliding-pane";
+import "react-sliding-pane/dist/react-sliding-pane.css";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import { actionTypes } from "./reducer";
 
 function Sidebar() {
   const [rooms, setRooms] = useState([]);
   const [{ user }, dispatch] = useStateValue();
-
+  const [state, setState] = useState({
+    isPaneOpen: false,
+    isPaneOpenLeft: false,
+  });
   useEffect(() => {
     const unsubscribe = db.collection("rooms").onSnapshot((snapshot) =>
       setRooms(
@@ -31,9 +39,35 @@ function Sidebar() {
 
   return (
     <div className="sidebar">
+      <SlidingPane
+        closeIcon={
+          <div className="sidebar__logOutExit">
+            <ExitToAppIcon />
+          </div>
+        }
+        isOpen={state.isPaneOpenLeft}
+        from="left"
+        width="200px"
+        onRequestClose={() => setState({ isPaneOpenLeft: false })}
+      >
+        <div
+          className="sidebar__logOut"
+          onClick={() => {
+            dispatch({
+              type: actionTypes.SET_USER,
+              user: null,
+            });
+          }}
+        >
+          Log Out
+        </div>
+      </SlidingPane>
       <div className="sidebar__header">
         <div className="sidebar__headerAvatar">
-          <Avatar src={user?.photoURL} />
+          <Avatar
+            src={user?.photoURL}
+            onClick={() => setState({ isPaneOpenLeft: true })}
+          />
         </div>
         <div className="sidebar__headerRight">
           <IconButton>
