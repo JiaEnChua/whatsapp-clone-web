@@ -7,8 +7,18 @@
 .sidebar__header {
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  padding: 12px;
   border-right: 1px solid lightgray;
+}
+
+.sidebar__headerAvatar {
+  border-radius: 50%;
+  padding: 12px;
+}
+
+.sidebar__headerAvatar:hover {
+  cursor: pointer;
+  background-color: rgb(221, 221, 221);
 }
 
 .sidebar__headerRight {
@@ -22,6 +32,7 @@
   margin-right: 2vw;
   font-size: 24px !important;
 }
+
 .sidebar__search {
   display: flex;
   align-items: center;
