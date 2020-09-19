@@ -34,11 +34,23 @@
   background-color: white;
   border-radius: 10px;
   width: fit-content;
+  margin-bottom: 10px;
 }
 
 .chat__bodyMessage__owner {
   background-color: #dcf8c6;
   margin-left: auto;
+}
+
+.chat__name {
+  font-weight: 800;
+  font-size: small;
+  margin-bottom: 5px;
+}
+
+.chat__timestamp {
+  font-size: xx-small;
+  margin-left: 10px;
 }
 
 .chat__footer {
