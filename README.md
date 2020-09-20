@@ -1,5 +1,17 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+Tech Stack:
+Front End:
+React Context API(Redux-like State Management tool)
+React UseEffect, UseState Hook
+React Router Dom
+Material-UI
+
+Back End:
+Auth - Google Auth
+DB - FireStore
+Hosting - Firebase 
+
 ## Available Scripts
 
 In the project directory, you can run:
