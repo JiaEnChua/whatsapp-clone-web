@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Chat.css";
 import { Avatar, IconButton } from "@material-ui/core";
 import { SearchOutlined } from "@material-ui/icons";
@@ -7,42 +7,52 @@ import MicIcon from "@material-ui/icons/Mic";
 import AttachFileIcon from "@material-ui/icons/AttachFile";
 import MoodIcon from "@material-ui/icons/Mood";
 import db from "./firebase";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useStateValue } from "./StateProvider";
 import firebase from "firebase";
+import SlidingPane from "react-sliding-pane";
+import "react-sliding-pane/dist/react-sliding-pane.css";
 
 function Chat() {
   const [input, setInput] = useState("");
-  const [roomName, setRoomName] = useState("");
+  const [room, setRoom] = useState("");
   const [messages, setMessages] = useState([]);
   const { roomID } = useParams();
   const [{ user }, dispatch] = useStateValue();
+  const [state, setState] = useState({
+    isPaneOpen: false,
+    isPaneOpenRight: false,
+  });
+  const history = useHistory();
+  const isMountedRef = useRef(null);
 
   useEffect(() => {
+    isMountedRef.current = true;
     if (roomID) {
-      db.collection("rooms")
-        .doc(roomID)
-        .onSnapshot((snapshot) => setRoomName(snapshot.data().name));
+      console.log("ROOM >>", roomID);
+      if (isMountedRef.current) {
+        db.collection("rooms")
+          .doc(roomID)
+          .onSnapshot((snapshot) => setRoom(snapshot.data()));
 
-      db.collection("rooms")
-        .doc(roomID)
-        .collection("messages")
-        .orderBy("timestamp", "asc")
-        .onSnapshot((snapshot) =>
-          setMessages(
-            snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }))
-          )
-        );
+        db.collection("rooms")
+          .doc(roomID)
+          .collection("messages")
+          .orderBy("timestamp", "asc")
+          .onSnapshot((snapshot) =>
+            setMessages(
+              snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }))
+            )
+          );
+      }
     }
 
-    return () => {
-      // cleanup
-    };
+    return () => (isMountedRef.current = false);
   }, [roomID]);
 
   const sendMessage = (event) => {
     event.preventDefault();
-    console.log(input);
+
     db.collection("rooms").doc(roomID).collection("messages").add({
       name: user.displayName,
       message: input,
@@ -51,12 +61,29 @@ function Chat() {
     setInput("");
   };
 
+  const deleteRoom = () => {
+    if (user.uid === room.ownerID) {
+      db.collection("rooms")
+        .doc(roomID)
+        .delete()
+        .then(function () {
+          console.log("Document successfully deleted!");
+        })
+        .catch(function (error) {
+          console.error("Error removing document: ", error);
+        });
+      history.push("/rooms");
+    } else {
+      alert("Sorry, only the room creator can delete it.");
+    }
+  };
+
   return (
     <div className="chat">
       <div className="chat__header">
         <Avatar src={`https://avatars.dicebear.com/api/male/${roomID}.svg`} />
         <div className="chat__headerMiddle">
-          <h3>{roomName}</h3>
+          <h3>{room.name}</h3>
           <p>
             {messages.length > 0
               ? "last seen " +
@@ -70,9 +97,21 @@ function Chat() {
           <IconButton>
             <SearchOutlined />
           </IconButton>
-          <IconButton>
+          <IconButton onClick={() => setState({ isPaneOpen: true })}>
             <MoreVertIcon />
           </IconButton>
+          <SlidingPane
+            isOpen={state.isPaneOpen}
+            width="200px"
+            onRequestClose={() => {
+              // triggered on "<" on left top click or on outside click
+              setState({ isPaneOpen: false });
+            }}
+          >
+            <p className="chat__deleteRoom" onClick={deleteRoom}>
+              Delete Chat Room
+            </p>
+          </SlidingPane>
         </div>
       </div>
       <div className="chat__body">

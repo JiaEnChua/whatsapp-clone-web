@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import "./SidebarChat.css";
 import { Avatar } from "@material-ui/core";
 import db from "./firebase";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useStateValue } from "./StateProvider";
 
 function SidebarChat({ id, name, addNewChat, lastMessage }) {
-  const [seed, setSeed] = useState("");
   const [messages, setMessages] = useState([]);
+  const [{ user }, dispatch] = useStateValue();
+  const history = useHistory();
 
   useEffect(() => {
     if (id) {
@@ -19,16 +21,18 @@ function SidebarChat({ id, name, addNewChat, lastMessage }) {
         );
     }
   }, [id]);
-  useEffect(() => {
-    setSeed(Math.floor(Math.random() * 5000));
-  }, []);
 
   const createChat = () => {
     const roomName = prompt("Please enter a room name");
     if (roomName) {
-      db.collection("rooms").add({
-        name: roomName,
-      });
+      db.collection("rooms")
+        .add({
+          name: roomName,
+          ownerID: user.uid,
+        })
+        .then((result) => {
+          history.push(`/rooms/${result.id}`);
+        });
     }
   };
 

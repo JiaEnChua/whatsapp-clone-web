@@ -86,3 +86,10 @@
 .chat__footerRight {
   padding-left: 10px;
 }
+
+.chat__deleteRoom:hover {
+  background-color: lightgray;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
